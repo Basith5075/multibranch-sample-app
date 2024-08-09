@@ -1,21 +1,10 @@
 pipeline {
-  agent {label 'Built-In Node'}
-  options {
-    buildDiscarder(logRotator(numToKeepStr: '5'))
-  }
-  stages {
-    stage('Build') {
-      steps {
-        sh './gradlew clean check --no-daemon'
-      }
+    agent { docker { image 'maven:3.9.8-eclipse-temurin-21-alpine' } }
+    stages {
+        stage('build') {
+            steps {
+                sh 'mvn --version'
+            }
+        }
     }
-  }
-  post {
-    always {
-        junit(
-          allowEmptyResults: true, 
-          testResults: '**/build/test-results/test/*.xml'
-        )
-    }
-  }
 }
